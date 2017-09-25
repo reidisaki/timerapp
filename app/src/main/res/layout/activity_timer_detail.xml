@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:gravity="center_horizontal"
+              android:layout_height="match_parent">
+
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:orientation="horizontal"
+                  android:layout_gravity="center_horizontal"
+                  android:layout_height="wrap_content">
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/dateStringTextView"
+                  android:text="2 weeks 3 days"
+        />
+        <ImageView android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:src="@drawable/ic_tmr_refresh"/>
+    </LinearLayout>
+
+    <EditText android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/titleEditText"
+              android:hint="Baileys Heartworm"
+    />
+    <LinearLayout android:layout_width="match_parent"
+                  android:gravity="center_horizontal"
+                  android:orientation="horizontal"
+                  android:layout_height="wrap_content">
+        <Spinner android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/catgorySpinner"/>
+        <ImageView android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:visibility="gone"
+                   tools:visibility="visible"
+                   android:id="@+id/categoryIconImageView"
+                   android:src="@drawable/ic_bday"/>
+    </LinearLayout>
+
+    <Spinner android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:id="@+id/dateTypeSpinner"/>
+    <EditText android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:hint="mm/dd/yyyy"
+              android:id="@+id/startDateSpinner"/>
+
+    <EditText android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/notesEditText"/>
+
+</LinearLayout>
