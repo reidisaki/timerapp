@@ -12,6 +12,7 @@ public class PrefManager {
 
     private final static String SHARED_PREFERENCES_VERSION = "shared_preferences_version";
     public final static String DEVICE_ID = "device_id";
+    private static final String ITEMS_ID = "items_id";
 
     private static SharedPreferences getPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
@@ -82,11 +83,11 @@ public class PrefManager {
         putString(context, SHARED_PREFERENCES_VERSION, value);
     }
 
-    public static String getDeviceId(Context context) {
-        return getString(context, DEVICE_ID, null);
+    public static String getListOfItems(Context context) {
+        return getString(context, ITEMS_ID, null);
     }
 
-    public static void setDeviceId(Context context, String deviceId) {
-        putString(context, DEVICE_ID, deviceId);
+    public static void setListOfItems(Context context, String listOfItemsJson) {
+        putString(context, ITEMS_ID, listOfItemsJson);
     }
 }

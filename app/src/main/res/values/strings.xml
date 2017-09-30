@@ -2,12 +2,17 @@
 
     <string name="interstitial">ca-app-pub-5747146577301976/2330375642</string>
     <string name="admob_banner_id">ca-app-pub-5747146577301976/9992390046</string>
-    <string-array name="dateTypeSpinner">
+    <string-array name="category_string_array">
+        <item>Category</item>
         <item>Birthday</item>
         <item>Health</item>
         <item>House</item>
         <item>Medical</item>
         <item>Pet</item>
+    </string-array>
+    <string-array name="dateTypeSpinner">
+        <item>Date</item>
+
     </string-array>
     <string name="title_activity_timer_base">TimerBaseActivity</string>
     <string name="title_activity_scrolling">activity scrolling</string>

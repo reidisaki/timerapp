@@ -1,15 +1,36 @@
 package kalei.com.timerapp;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by risaki on 9/24/17.
  */
 
-public class TimerItem {
+public class TimerItem implements Serializable {
 
     String name;
     String category;
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(final boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    boolean isEnabled;
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(final String startDate) {
+        this.startDate = startDate;
+    }
+
+    String startDate;
 
     public String getType() {
         return type;

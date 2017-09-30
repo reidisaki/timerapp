@@ -1,9 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:context="kalei.com.timerapp.SplashActivity">
-    <item android:id="@+id/action_settings"
-          android:title="stuff"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+            android:id="@+id/spinner"
+            android:title="ActionBar Spinner"
+            app:actionViewClass="android.widget.Spinner"
+            android:background="#ff00"
+            app:showAsAction="always"/>
 </menu>

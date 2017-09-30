@@ -25,6 +25,8 @@ public class SplashActivity extends TimerBaseActivity {
         setContentView(R.layout.activity_splash);
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
+        } else {
+
         }
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getString(R.string.interstitial));
@@ -58,7 +60,7 @@ public class SplashActivity extends TimerBaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if (!hasInternet(this)) {
+        if (!hasInternet(this) || BuildConfig.DEBUG) {
             startActivity();
         } else {
             requestNewInterstitial();
