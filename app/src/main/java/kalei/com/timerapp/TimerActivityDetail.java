@@ -4,10 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import android.app.DatePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
@@ -24,7 +25,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,6 +36,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import kalei.com.timerapp.views.CustomNoShowFirstItemAdapter;
 import kalei.com.timerapp.views.TimerItemAdapter;
 
@@ -60,7 +64,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
     @BindView (R.id.notesEditText)
     EditText notesEditText;
     @BindView (R.id.startDateSpinner)
-    EditText startDateChooser;
+    EditText startDateEditText;
     @BindView (R.id.catgorySpinner)
     Spinner categorySpinner;
     @BindView (R.id.categoryIconImageView)
@@ -69,6 +73,10 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
     Toolbar toolbar;
     @BindView (R.id.dateStringTextView)
     TextView dateStringTextView;
+    @BindView (R.id.lock_icon)
+    ImageView lockIcon;
+    @BindView (R.id.refresh_image_view)
+    ImageView refreshImageView;
 
     TimerItem currentItem = null;
     List<TimerItem> timerItemList = new ArrayList<>();
@@ -84,6 +92,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
 
         setSupportActionBar(toolbar);
         id = getIntent().getIntExtra(TimerActivityDetail.ID_BUNDLE_NAME, 0);
+        Toast.makeText(this, "id: " + id, Toast.LENGTH_SHORT).show();
         String jsonListString = PrefManager.getListOfItems(this);
         timerItemList = new Gson().fromJson(jsonListString, new TypeToken<ArrayList<TimerItem>>() {
         }.getType());
@@ -97,7 +106,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
             }
         }
         toolbar.setTitle("Edit or New");
-        toolbar.setNavigationIcon(R.drawable.quantum_ic_play_arrow_grey600_36);
+        toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.showOverflowMenu();
 
         toolbar.setNavigationOnClickListener(new OnClickListener() {
@@ -107,14 +116,15 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
             }
         });
 
-        startDateChooser.setOnClickListener(new OnClickListener() {
+        startDateEditText.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View view) {
 
-                final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, android.R.style.Theme_Holo_Dialog);
-                if (startDateChooser.getText().length() > 0) {
+                final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, android.R.style.Theme_Holo_Light_Dialog);
+                datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                if (startDateEditText.getText().length() > 0) {
                     Calendar c = Calendar.getInstance();
-                    c.setTime(new Date(startDateChooser.getText().toString()));
+                    c.setTime(new Date(startDateEditText.getText().toString()));
                     int year = c.get(Calendar.YEAR);
                     int month = c.get(Calendar.MONTH);
                     int day = c.get(Calendar.DAY_OF_MONTH);
@@ -136,7 +146,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 DatePicker d = datePickerDialog.getDatePicker();
-                                startDateChooser.setText(String.format("%s/%s/%s", d.getMonth() + 1, d.getDayOfMonth(), d.getYear()));
+                                startDateEditText.setText(String.format("%s/%s/%s", d.getMonth() + 1, d.getDayOfMonth(), d.getYear()));
                             }
                         });
                 datePickerDialog.setButton(android.content.DialogInterface.BUTTON_NEGATIVE,
@@ -151,6 +161,8 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
 //                DialogFragment picker = new DatePickerFragment();
 //
 //                picker.show(getSupportFragmentManager(), "datePicker");
+
+                setupUI();
             }
         });
 
@@ -196,10 +208,40 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
         }
     }
 
+    private void setupUI() {
+        if (!timerItem.isEnabled()) {
+            refreshImageView.setAlpha(.5f);
+        }
+    }
+
+    @OnClick (R.id.refresh_image_view)
+    public void refreshClicked() {
+
+        if (currentItem == null) {
+            timerItem.setDate(new Date());
+            currentItem = timerItem;
+        } else {
+            currentItem.setDate(new Date());
+        }
+        startDateEditText.setText(new SimpleDateFormat("MM/dd/yyyy").format(currentItem.getDate()));
+        dateStringTextView.setText(calculateDateDifferenceStringFormat());
+    }
+
+    @OnClick ({R.id.lock_icon})
+    public void lockIconClicked(ImageView lockIconImage) {
+        if (lockIconImage.getDrawable().getConstantState() == getDrawable(R.drawable.ic_lock_black_24dp).getConstantState()) {
+            lockIconImage.setImageDrawable(getDrawable(R.drawable.ic_lock_open_black_24dp));
+            startDateEditText.setEnabled(true);
+        } else {
+            lockIconImage.setImageDrawable(getDrawable(R.drawable.ic_lock_black_24dp));
+            startDateEditText.setEnabled(false);
+        }
+    }
+
     private void setExistingValues() {
         notesEditText.setText(currentItem.getNote());
         titleEditText.setText(currentItem.getName());
-        startDateChooser.setText(currentItem.getDateString());
+        startDateEditText.setText(new SimpleDateFormat("MM/dd/yyyy").format(currentItem.getDate()));
         categorySpinner.setSelection(getSelectedPositionCategory());
         iconImageView.setImageDrawable(ContextCompat.getDrawable(this, TimerItemAdapter.setIconImage(currentItem)));
         dateStringTextView.setText(calculateDateDifferenceStringFormat());
@@ -238,6 +280,30 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_detail, menu);
         MenuItem saveMenuItem = menu.getItem(0);
+        MenuItem deleteMenuItem = menu.getItem(1);
+        deleteMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(final MenuItem menuItem) {
+
+                if (id > 0) {
+                    Iterator<TimerItem> iter = timerItemList.iterator();
+
+                    while (iter.hasNext()) {
+                        TimerItem item = iter.next();
+
+                        if (item.getId() == id) {
+                            timerItemList.remove(item);
+                        }
+                    }
+
+                    PrefManager.setListOfItems(mContext, new Gson().toJson(timerItemList));
+                    finish();
+                }
+
+                return false;
+            }
+        });
+
         saveMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(final MenuItem menuItem) {
@@ -250,38 +316,45 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
 
     private void handleSaveItem() {
 
-        timerItem.setName(titleEditText.getText().toString());
-        timerItem.setCategory(categorySpinner.getSelectedItem().toString());
-        timerItem.setDateString(startDateChooser.getText().toString());
-        timerItem.setNote(notesEditText.getText().toString());
-        timerItem.setDate(new Date(startDateChooser.getText().toString()));
+        if (startDateEditText.getText().length() > 0) {
+            timerItem.setName(titleEditText.getText().toString());
+            timerItem.setCategory(categorySpinner.getSelectedItem().toString());
+            timerItem.setDateString(startDateEditText.getText().toString());
+            timerItem.setNote(notesEditText.getText().toString());
+            timerItem.setDate(new Date(startDateEditText.getText().toString()));
+            timerItem.setEnabled(isEnabled());
 
-        //existing item
-        if (id > 0) {
+            //existing item
+            if (id > 0) {
 
-            Iterator<TimerItem> iter = timerItemList.iterator();
+                Iterator<TimerItem> iter = timerItemList.iterator();
 
-            while (iter.hasNext()) {
-                TimerItem item = iter.next();
+                while (iter.hasNext()) {
+                    TimerItem item = iter.next();
 
-                if (item.getId() == id) {
-                    iter.remove();
-                    timerItem.setId(id);
+                    if (item.getId() == id) {
+                        iter.remove();
+                        timerItem.setId(id);
+                    }
                 }
+            } else {
+                timerItem.setId(timerItemList.size() == 0 ? 1 : timerItemList.get(timerItemList.size() - 1).getId() + 1);
             }
-        } else {
-            timerItem.setId(timerItemList.size() == 0 ? 1 : timerItemList.get(timerItemList.size() - 1).getId() + 1);
+
+            timerItemList.add(timerItem);
+
+            PrefManager.setListOfItems(this, new Gson().toJson(timerItemList));
         }
-
-        timerItemList.add(timerItem);
-
-        PrefManager.setListOfItems(this, new Gson().toJson(timerItemList));
         finish();
     }
 
     @Override
     public void onDateSet(final DatePicker datePicker, final int year, final int month, final int day) {
-        startDateChooser.setText(String.format("%s/%s/%s", month + 1, day, year));
+        startDateEditText.setText(String.format("%s/%s/%s", month + 1, day, year));
+    }
+
+    public boolean isEnabled() {
+        return lockIcon.getDrawable().getConstantState() != getDrawable(R.drawable.ic_lock_black_24dp).getConstantState();
     }
 
     /**

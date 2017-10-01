@@ -22,16 +22,6 @@ public class TimerItem implements Serializable {
 
     boolean isEnabled;
 
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(final String startDate) {
-        this.startDate = startDate;
-    }
-
-    String startDate;
-
     public String getType() {
         return type;
     }

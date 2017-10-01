@@ -35,6 +35,7 @@
                    android:layout_height="50dp"
                    android:layout_alignParentRight="true"
                    android:scaleType="fitXY"
+                   android:id="@+id/refresh_image_view"
                    android:src="@drawable/ic_tmr_refresh"/>
     </RelativeLayout>
 
@@ -70,26 +71,26 @@
                        android:id="@+id/categoryIconImageView"
                        android:src="@drawable/ic_pet"/>
         </RelativeLayout>
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_gravity="left"
+                        android:layout_marginTop="20dp"
+                        android:layout_height="wrap_content">
 
+            <EditText android:layout_width="200dp"
+                      android:layout_height="wrap_content"
+                      android:layout_gravity="left"
+                      android:layout_marginTop="20dp"
+                      android:hint="mm/dd/yyyy"
+                      android:textSize="16sp"
+                      android:focusableInTouchMode="false"
+                      android:id="@+id/startDateSpinner"/>
 
-        <EditText android:layout_width="200dp"
-                  android:layout_height="wrap_content"
-                  android:layout_gravity="left"
-                  android:layout_marginTop="20dp"
-                  android:hint="mm/dd/yyyy"
-                  android:textSize="16sp"
-                  android:focusableInTouchMode="false"
-                  android:id="@+id/startDateSpinner"/>
-
-        <DatePicker
-                android:visibility="gone"
-                android:id="@+id/datePicker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:calendarViewShown="false"
-                android:datePickerMode="spinner"/>
+            <ImageView android:layout_width="wrap_content"
+                       android:layout_toRightOf="@id/startDateSpinner"
+                       android:id="@+id/lock_icon"
+                       android:src="@drawable/ic_lock_open_black_24dp"
+                       android:layout_height="wrap_content"/>
+        </RelativeLayout>
 
         <EditText android:layout_width="250dp"
                   android:layout_marginTop="20dp"

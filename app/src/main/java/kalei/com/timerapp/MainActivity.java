@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ public class MainActivity extends TimerBaseActivity {
 
     @BindView (R.id.main_recycler_view)
     RecyclerView recyclerView;
-
     @BindView (R.id.toolbar)
     Toolbar toolbar;
     TimerItemAdapter adapter;
@@ -136,9 +136,11 @@ public class MainActivity extends TimerBaseActivity {
 
     public ArrayList<TimerItem> filteredList(String categoryName) {
         ArrayList<TimerItem> filteredList = new ArrayList<>();
-        for (TimerItem t : adapter.getItems()) {
-            if (t.getCategory().toLowerCase().equals(categoryName.toLowerCase())) {
-                filteredList.add(t);
+        if (adapter.getItems() != null) {
+            for (TimerItem t : adapter.getItems()) {
+                if (t.getCategory().toLowerCase().equals(categoryName.toLowerCase())) {
+                    filteredList.add(t);
+                }
             }
         }
         return filteredList;

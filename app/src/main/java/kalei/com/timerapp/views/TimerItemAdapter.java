@@ -1,5 +1,7 @@
 package kalei.com.timerapp.views;
 
+import com.google.gson.Gson;
+
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
@@ -13,12 +15,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kalei.com.timerapp.MainActivity;
+import kalei.com.timerapp.PrefManager;
 import kalei.com.timerapp.R;
+import kalei.com.timerapp.TimeDifference;
 import kalei.com.timerapp.TimerActivityDetail;
 import kalei.com.timerapp.TimerItem;
 import kalei.com.timerapp.views.TimerItemAdapter.TimerViewHolder;
@@ -33,11 +38,13 @@ public class TimerItemAdapter extends RecyclerView.Adapter<TimerViewHolder> {
     int id;
 
     public void updateList(ArrayList<TimerItem> list) {
-        int totalSize = getItemCount();
-        setItems(list);
-        notifyItemRangeRemoved(0, totalSize);
-        //tell the recycler view how many new items we added
-        notifyItemRangeInserted(0, list.size());
+        if (list != null) {
+            int totalSize = getItemCount();
+            setItems(list);
+            notifyItemRangeRemoved(0, totalSize);
+            //tell the recycler view how many new items we added
+            notifyItemRangeInserted(0, list.size());
+        }
     }
 
     public TimerItemAdapter(Context context) {
@@ -58,7 +65,7 @@ public class TimerItemAdapter extends RecyclerView.Adapter<TimerViewHolder> {
         final TimerItem item = getItem(position);
 
         holder.titleTextView.setText(item.getName());
-        holder.dateTextView.setText(item.getDateString());
+        holder.dateTextView.setText(TimeDifference.getFormattedStringDate(item.getDate(), new Date()));
         holder.iconImageView.setImageDrawable(ContextCompat.getDrawable(mContext, setIconImage(item)));
         holder.timerImageView.setAlpha(item.isEnabled() ? 1f : .5f);
         holder.itemView.setOnClickListener(new OnClickListener() {
@@ -73,18 +80,20 @@ public class TimerItemAdapter extends RecyclerView.Adapter<TimerViewHolder> {
         holder.timerImageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View view) {
-                handleTimerEnabledClicked(holder.timerImageView, item);
+                handleTimerEnabledClicked(holder, item, position);
             }
         });
     }
 
-    private void handleTimerEnabledClicked(final ImageView timerImageView, final TimerItem item) {
-        if (!item.isEnabled()) {
-            timerImageView.setAlpha(1f);
-            item.setEnabled(true);
+    private void handleTimerEnabledClicked(final TimerViewHolder holder, final TimerItem item, int position) {
+        if (item.isEnabled()) {
+            holder.timerImageView.setAlpha(1f);
+            item.setDate(new Date());
+            items.set(position, item);
+            holder.dateTextView.setText("0 days");
+            PrefManager.setListOfItems(mContext, new Gson().toJson(items));
         } else {
-            timerImageView.setAlpha(.5f);
-            item.setEnabled(false);
+            holder.timerImageView.setAlpha(.5f);
         }
     }
 
