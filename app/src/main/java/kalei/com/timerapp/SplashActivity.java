@@ -53,7 +53,7 @@ public class SplashActivity extends TimerBaseActivity {
     }
 
     private void startActivity() {
-        Intent i = new Intent(SplashActivity.this, MainActivity.class);
+        Intent i = new Intent(SplashActivity.this, LoginActivity.class);
         startActivity(i);
     }
 

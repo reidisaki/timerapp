@@ -6,6 +6,9 @@ import com.google.gson.reflect.TypeToken;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.DrawerLayout.DrawerListener;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
@@ -43,6 +46,8 @@ public class MainActivity extends TimerBaseActivity {
     RecyclerView recyclerView;
     @BindView (R.id.toolbar)
     Toolbar toolbar;
+
+    @BindView (R.id.drawer_layout) DrawerLayout mDrawerLayout;
     TimerItemAdapter adapter;
     ArrayList<TimerItem> timerItemList;
     int id = -1; // this needs to be the id you are passing from the item you select
@@ -71,8 +76,39 @@ public class MainActivity extends TimerBaseActivity {
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
+                R.string.common_open_on_phone,
+                R.string.cast_closed_captions);
+
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+
         toolbar.showOverflowMenu();
         setSupportActionBar(toolbar);
+
+        getSupportActionBar().setCustomView(getLayoutInflater().inflate(R.layout.actionbar_dropdown, null, false));
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        mDrawerLayout.addDrawerListener(new DrawerListener() {
+            @Override
+            public void onDrawerSlide(final View drawerView, final float slideOffset) {
+            }
+
+            @Override
+            public void onDrawerOpened(final View drawerView) {
+
+//                getToolbar().setNavigationIcon(R.drawable.ic_action_back_white);
+            }
+
+            @Override
+            public void onDrawerClosed(final View drawerView) {
+//                getToolbar().setNavigationIcon(getHamburgerDrawable());
+            }
+
+            @Override
+            public void onDrawerStateChanged(final int newState) {
+            }
+        });
     }
 
     @Override
@@ -82,7 +118,7 @@ public class MainActivity extends TimerBaseActivity {
         MenuItem item = menu.findItem(R.id.spinner);
         Spinner spinner = (Spinner) item.getActionView();
 
-        spinner.setMinimumWidth(100);
+        spinner.setMinimumWidth(300);
 
         String[] categories = getResources().getStringArray(R.array.category_string_array);
         List<String> arrayList = new ArrayList<>();

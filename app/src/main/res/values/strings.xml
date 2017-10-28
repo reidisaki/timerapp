@@ -16,4 +16,6 @@
     </string-array>
     <string name="title_activity_timer_base">TimerBaseActivity</string>
     <string name="title_activity_scrolling">activity scrolling</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="set_date">Set date</string>
 </resources>
