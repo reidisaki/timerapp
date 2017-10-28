@@ -6,5 +6,5 @@
             android:title="ActionBar Spinner"
             app:actionViewClass="android.widget.Spinner"
             android:background="#ff00"
-            app:showAsAction="always"/>
+            app:showAsAction="never"/>
 </menu>

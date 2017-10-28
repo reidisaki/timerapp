@@ -67,7 +67,7 @@ public class TimerItemAdapter extends RecyclerView.Adapter<TimerViewHolder> {
         holder.titleTextView.setText(item.getName());
         holder.dateTextView.setText(TimeDifference.getFormattedStringDate(item.getDate(), new Date()));
         holder.iconImageView.setImageDrawable(ContextCompat.getDrawable(mContext, setIconImage(item)));
-        holder.timerImageView.setAlpha(item.isEnabled() ? 1f : .5f);
+        holder.timerImageView.setAlpha(item.isEnabled() && notBirthday(item) ? 1f : .5f);
         holder.itemView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -85,14 +85,16 @@ public class TimerItemAdapter extends RecyclerView.Adapter<TimerViewHolder> {
         });
     }
 
+    private boolean notBirthday(TimerItem item) {
+        return !item.getCategory().toLowerCase().equals("birthday");
+    }
+
     private void handleTimerEnabledClicked(final TimerViewHolder holder, final TimerItem item, int position) {
-        if (item.isEnabled()) {
-            holder.timerImageView.setAlpha(1f);
+        if (item.isEnabled() || notBirthday(item)) {
             item.setDate(new Date());
             items.set(position, item);
             holder.dateTextView.setText("0 days");
             PrefManager.setListOfItems(mContext, new Gson().toJson(items));
-        } else {
             holder.timerImageView.setAlpha(.5f);
         }
     }

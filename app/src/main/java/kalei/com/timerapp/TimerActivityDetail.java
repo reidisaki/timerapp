@@ -122,6 +122,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
 
                 final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, android.R.style.Theme_Holo_Light_Dialog);
                 datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                datePickerDialog.setTitle(getString(R.string.set_date));
                 if (startDateEditText.getText().length() > 0) {
                     Calendar c = Calendar.getInstance();
                     c.setTime(new Date(startDateEditText.getText().toString()));
@@ -229,11 +230,11 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
 
     @OnClick ({R.id.lock_icon})
     public void lockIconClicked(ImageView lockIconImage) {
-        if (lockIconImage.getDrawable().getConstantState() == getDrawable(R.drawable.ic_lock_black_24dp).getConstantState()) {
-            lockIconImage.setImageDrawable(getDrawable(R.drawable.ic_lock_open_black_24dp));
+        if (lockIconImage.getDrawable().getConstantState() == getDrawable(R.drawable.ic_lock).getConstantState()) {
+            lockIconImage.setImageDrawable(getDrawable(R.drawable.ic_unlock));
             startDateEditText.setEnabled(true);
         } else {
-            lockIconImage.setImageDrawable(getDrawable(R.drawable.ic_lock_black_24dp));
+            lockIconImage.setImageDrawable(getDrawable(R.drawable.ic_lock));
             startDateEditText.setEnabled(false);
         }
     }
@@ -245,6 +246,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
         categorySpinner.setSelection(getSelectedPositionCategory());
         iconImageView.setImageDrawable(ContextCompat.getDrawable(this, TimerItemAdapter.setIconImage(currentItem)));
         dateStringTextView.setText(calculateDateDifferenceStringFormat());
+        lockIcon.setImageDrawable(getDrawable(currentItem.isEnabled ? R.drawable.ic_unlock : R.drawable.ic_lock));
     }
 
     private int getSelectedPositionCategory() {
@@ -354,7 +356,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
     }
 
     public boolean isEnabled() {
-        return lockIcon.getDrawable().getConstantState() != getDrawable(R.drawable.ic_lock_black_24dp).getConstantState();
+        return lockIcon.getDrawable().getConstantState() != getDrawable(R.drawable.ic_lock).getConstantState();
     }
 
     /**

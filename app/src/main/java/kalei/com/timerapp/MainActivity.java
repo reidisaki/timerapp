@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -86,39 +87,8 @@ public class MainActivity extends TimerBaseActivity {
         toolbar.showOverflowMenu();
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setCustomView(getLayoutInflater().inflate(R.layout.actionbar_dropdown, null, false));
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-        mDrawerLayout.addDrawerListener(new DrawerListener() {
-            @Override
-            public void onDrawerSlide(final View drawerView, final float slideOffset) {
-            }
-
-            @Override
-            public void onDrawerOpened(final View drawerView) {
-
-//                getToolbar().setNavigationIcon(R.drawable.ic_action_back_white);
-            }
-
-            @Override
-            public void onDrawerClosed(final View drawerView) {
-//                getToolbar().setNavigationIcon(getHamburgerDrawable());
-            }
-
-            @Override
-            public void onDrawerStateChanged(final int newState) {
-            }
-        });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        MenuItem item = menu.findItem(R.id.spinner);
-        Spinner spinner = (Spinner) item.getActionView();
-
-        spinner.setMinimumWidth(300);
+        View actionBarDropDownView = getLayoutInflater().inflate(R.layout.actionbar_dropdown, null, false);
+        Spinner actionBarSpinner = actionBarDropDownView.findViewById(R.id.category_spinner);
 
         String[] categories = getResources().getStringArray(R.array.category_string_array);
         List<String> arrayList = new ArrayList<>();
@@ -128,8 +98,10 @@ public class MainActivity extends TimerBaseActivity {
         ArrayAdapter<String> dropDownCategoryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arrayList);
 
         dropDownCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(dropDownCategoryAdapter);
-        spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+        actionBarSpinner.setAdapter(dropDownCategoryAdapter);
+        actionBarSpinner.setDropDownWidth(500);
+        //todo: can you use images with dropdown menus?
+        actionBarSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(final AdapterView<?> adapterView, final View view, final int i, final long l) {
 
@@ -167,6 +139,37 @@ public class MainActivity extends TimerBaseActivity {
 
             }
         });
+        getSupportActionBar().setCustomView(actionBarDropDownView);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        mDrawerLayout.addDrawerListener(new DrawerListener() {
+            @Override
+            public void onDrawerSlide(final View drawerView, final float slideOffset) {
+            }
+
+            @Override
+            public void onDrawerOpened(final View drawerView) {
+
+//                getToolbar().setNavigationIcon(R.drawable.ic_action_back_white);
+            }
+
+            @Override
+            public void onDrawerClosed(final View drawerView) {
+//                getToolbar().setNavigationIcon(getHamburgerDrawable());
+            }
+
+            @Override
+            public void onDrawerStateChanged(final int newState) {
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        MenuItem item = menu.findItem(R.id.spinner);
+
         return true;
     }
 
