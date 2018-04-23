@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="category_drawable_array">
+        <item>@drawable/ic_bday</item>
+        <item>@drawable/ic_health</item>
+        <item>@drawable/ic_house</item>
+        <item>@drawable/ic_med</item>
+        <item>@drawable/ic_pet</item>
+    </array>
+</resources>

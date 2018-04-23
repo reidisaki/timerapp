@@ -80,7 +80,7 @@ public class MainActivity extends TimerBaseActivity {
 
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
                 R.string.common_open_on_phone,
-                R.string.cast_closed_captions);
+                R.string.common_open_on_phone);
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();

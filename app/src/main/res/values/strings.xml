@@ -18,4 +18,5 @@
     <string name="title_activity_scrolling">activity scrolling</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="set_date">Set date</string>
+    <string name="client_api_key">AIzaSyBpqdKE3YsUSnw3slH6NPW_nDlsSwx6QDk</string>
 </resources>
