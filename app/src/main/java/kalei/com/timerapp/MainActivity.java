@@ -25,6 +25,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +48,7 @@ public class MainActivity extends TimerBaseActivity {
     RecyclerView recyclerView;
     @BindView (R.id.toolbar)
     Toolbar toolbar;
-
+    //todo: research how the hell to use drawerlayout
     @BindView (R.id.drawer_layout) DrawerLayout mDrawerLayout;
     TimerItemAdapter adapter;
     ArrayList<TimerItem> timerItemList;
@@ -142,6 +143,12 @@ public class MainActivity extends TimerBaseActivity {
         getSupportActionBar().setCustomView(actionBarDropDownView);
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayShowCustomEnabled(true);
+        mDrawerLayout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                Toast.makeText(MainActivity.this, "Drawer is clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
         mDrawerLayout.addDrawerListener(new DrawerListener() {
             @Override
             public void onDrawerSlide(final View drawerView, final float slideOffset) {
@@ -150,12 +157,14 @@ public class MainActivity extends TimerBaseActivity {
             @Override
             public void onDrawerOpened(final View drawerView) {
 
+                Toast.makeText(MainActivity.this, "Drawer is open", Toast.LENGTH_SHORT).show();
 //                getToolbar().setNavigationIcon(R.drawable.ic_action_back_white);
             }
 
             @Override
             public void onDrawerClosed(final View drawerView) {
 //                getToolbar().setNavigationIcon(getHamburgerDrawable());
+                Toast.makeText(MainActivity.this, "Drawer is closed", Toast.LENGTH_SHORT).show();
             }
 
             @Override

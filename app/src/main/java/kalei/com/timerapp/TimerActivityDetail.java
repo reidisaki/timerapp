@@ -168,9 +168,10 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
         });
 
         final CustomNoShowFirstItemAdapter adapter = new CustomNoShowFirstItemAdapter(this,              // Use our custom adapter
-                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.category_string_array));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                android.R.layout.simple_spinner_item, getDefaultTimerItems());//timerItemList.toArray(new TimerItem[timerItemList.size()]));
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(adapter);
+
         categorySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -239,12 +240,22 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
         }
     }
 
+    public TimerItem[] getDefaultTimerItems() {
+        String[] categories = getResources().getStringArray(R.array.category_string_array);
+        TimerItem[] items = new TimerItem[categories.length];
+        for (int i = 0; i < categories.length; i++) {
+            items[i] = new TimerItem(categories[i]);
+        }
+        return items;
+    }
+
     private void setExistingValues() {
         notesEditText.setText(currentItem.getNote());
         titleEditText.setText(currentItem.getName());
         startDateEditText.setText(new SimpleDateFormat("MM/dd/yyyy").format(currentItem.getDate()));
         categorySpinner.setSelection(getSelectedPositionCategory());
         iconImageView.setImageDrawable(ContextCompat.getDrawable(this, TimerItemAdapter.setIconImage(currentItem)));
+
         dateStringTextView.setText(calculateDateDifferenceStringFormat());
         lockIcon.setImageDrawable(getDrawable(currentItem.isEnabled ? R.drawable.ic_unlock : R.drawable.ic_lock));
     }

@@ -12,6 +12,14 @@ public class TimerItem implements Serializable {
     String name;
     String category;
 
+    public TimerItem() {
+
+    }
+
+    public TimerItem(String category) {
+        this.category = category;
+    }
+
     public boolean isEnabled() {
         return isEnabled;
     }

@@ -66,7 +66,9 @@ public class TimerItemAdapter extends RecyclerView.Adapter<TimerViewHolder> {
 
         holder.titleTextView.setText(item.getName());
         holder.dateTextView.setText(TimeDifference.getFormattedStringDate(item.getDate(), new Date()));
-        holder.iconImageView.setImageDrawable(ContextCompat.getDrawable(mContext, setIconImage(item)));
+        if (position != 0) {
+            holder.iconImageView.setImageDrawable(ContextCompat.getDrawable(mContext, setIconImage(item)));
+        }
         holder.timerImageView.setAlpha(item.isEnabled() && notBirthday(item) ? 1f : .5f);
         holder.itemView.setOnClickListener(new OnClickListener() {
             @Override
