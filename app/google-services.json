@@ -15,7 +15,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "450542561364-h66a4onitgtpffcscnpcn8d676v2aj6b.apps.googleusercontent.com",
+          "client_id": "450542561364-ifsnm4kondfse2n5l8n8njq23b7m2spk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "kalei.com.timerapp",
@@ -23,7 +23,7 @@
           }
         },
         {
-          "client_id": "450542561364-ps1hnjcol8afntrdj2sltbup7bp5e8i5.apps.googleusercontent.com",
+          "client_id": "450542561364-18ka74qlm1k4br6sfaih0idiptjbh05d.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -40,7 +40,95 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "450542561364-ps1hnjcol8afntrdj2sltbup7bp5e8i5.apps.googleusercontent.com",
+              "client_id": "450542561364-18ka74qlm1k4br6sfaih0idiptjbh05d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450542561364:android:c75d3b840e3a6cea",
+        "android_client_info": {
+          "package_name": "kalei.com.timerapp.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "450542561364-ae3vkk61fefu7dvjgc2mkm2fjmltvric.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kalei.com.timerapp.debug",
+            "certificate_hash": "2f8e203b5582730f1ec18be3bfa9ff245be798ae"
+          }
+        },
+        {
+          "client_id": "450542561364-18ka74qlm1k4br6sfaih0idiptjbh05d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2yiLzNtmFYXckOnfRyHAlZVO-61BUokA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "450542561364-18ka74qlm1k4br6sfaih0idiptjbh05d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450542561364:android:110dbb37f83c2cca",
+        "android_client_info": {
+          "package_name": "kalei.com.timerapp.qa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "450542561364-n6tm5ggq38l0rhopk15kcpqj3q7b3n7m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kalei.com.timerapp.qa",
+            "certificate_hash": "2f8e203b5582730f1ec18be3bfa9ff245be798ae"
+          }
+        },
+        {
+          "client_id": "450542561364-18ka74qlm1k4br6sfaih0idiptjbh05d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2yiLzNtmFYXckOnfRyHAlZVO-61BUokA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "450542561364-18ka74qlm1k4br6sfaih0idiptjbh05d.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

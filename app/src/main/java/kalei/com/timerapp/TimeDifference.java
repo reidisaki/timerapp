@@ -71,6 +71,8 @@ public class TimeDifference {
             }
         } catch (IllegalArgumentException e) {
             returnString = "you cannot set this in the future. ";
+        } catch (NullPointerException e) {
+            returnString = "null pointer exception";
         }
         return returnString;
     }

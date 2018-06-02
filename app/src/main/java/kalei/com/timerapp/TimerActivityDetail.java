@@ -1,5 +1,6 @@
 package kalei.com.timerapp;
 
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -9,8 +10,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -25,6 +24,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -72,6 +72,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
 
     public static final String ID_BUNDLE_NAME = "bundle_name";
     public static final String EXISTING_ID_BUNDLE_NAME = "exiting_bundle_id";
+    private static final String TAG = "TimerActivityDetail";
     TimerItem timerItem = new TimerItem();
     @BindView (R.id.titleEditText)
     EditText titleEditText;
@@ -94,7 +95,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
 
     TimerItem currentItem = null;
     List<TimerItem> timerItemList = new ArrayList<>();
-    int id;
+    String id;
     Context mContext;
 
     private FirebaseFirestore db = null;
@@ -107,8 +108,8 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        id = getIntent().getIntExtra(TimerActivityDetail.ID_BUNDLE_NAME, 0);
-        Toast.makeText(this, "id: " + id, Toast.LENGTH_SHORT).show();
+        id = getIntent().getStringExtra(TimerActivityDetail.ID_BUNDLE_NAME);
+        Toast.makeText(this, "userId: " + id, Toast.LENGTH_SHORT).show();
         String jsonListString = PrefManager.getListOfItems(this);
         timerItemList = new Gson().fromJson(jsonListString, new TypeToken<ArrayList<TimerItem>>() {
         }.getType());
@@ -117,7 +118,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
             timerItemList = new ArrayList<>();
         }
         for (TimerItem t : timerItemList) {
-            if (t.getId() == id) {
+            if (t.getUserId().equals(id)) {
                 currentItem = t;
             }
         }
@@ -221,7 +222,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
             }
         });
 
-        if (currentItem != null && currentItem.getId() > 0) {
+        if (currentItem != null && currentItem.getUserId() != null) {
             setExistingValues();
         }
     }
@@ -314,13 +315,13 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
             @Override
             public boolean onMenuItemClick(final MenuItem menuItem) {
 
-                if (id > 0) {
+                if (id != null) {
                     Iterator<TimerItem> iter = timerItemList.iterator();
 
                     while (iter.hasNext()) {
                         TimerItem item = iter.next();
 
-                        if (item.getId() == id) {
+                        if (item.getUserId() == id) {
                             timerItemList.remove(item);
                         }
                     }
@@ -345,40 +346,37 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
 
     private void setup() {
         db = FirebaseFirestore.getInstance();
-        // [END get_firestore_instance]
-
-        // [START set_firestore_settings]
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(true)
                 .build();
         db.setFirestoreSettings(settings);
     }
 
-    public void getAllItems() {
-        db.collection("items")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-//                                Log.d(TAG, document.getId() + " => " + document.getData());
-                            }
-                        } else {
-//                            Log.w(TAG, "Error getting documents.", task.getException());
-                        }
-                    }
-                });
-    }
-
     public void updateDocument(TimerItem timerItem) {
         // [START update_document]
-        DocumentReference ref = db.collection("items").document(String.valueOf(timerItem.getId()));
+        DocumentReference ref = db.collection(getString(R.string.fb_items)).document(String.valueOf(timerItem.getUserId()));
 
 //todo: you might need to update each field manually to the new data..
 //not just set the item to be something else like this
+
+        /*  this will update the entire item completely
+        db.collection("cities").document("LA")
+        .set(city)
+        .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "DocumentSnapshot successfully written!");
+            }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "Error writing document", e);
+            }
+        });
+         */
         ref
-                .update(String.valueOf(timerItem.getId()), new Gson().toJson(timerItem))
+                .update(String.valueOf(timerItem.getUserId()), new Gson().toJson(timerItem))
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -415,67 +413,113 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
 
     private void addItem(TimerItem timerItem) {
         Map<String, Object> item = new HashMap<>();
-        item.put(String.valueOf(timerItem.getId()), new Gson().toJson(timerItem));
+        hydrateTimerItem();
+        String timerItemString = new Gson().toJson(timerItem);
+        item.put("userId", String.valueOf(timerItem.getUserId()));
+        item.put("category", timerItem.getCategory());
+        item.put("dateCreated", timerItem.getDateString());
+        item.put("date", timerItem.getDate());
+        item.put("type", timerItem.getType());
+        item.put("dateString", timerItem.getDateString());
+        item.put("name", timerItem.getName());
+        item.put("note", timerItem.getNote());
+        item.put("isEnabled", timerItem.isEnabled());
 
         // Add a new document with a generated ID
-        db.collection("users")
+//        DocumentReference users = db.collection("users")
+//                .add(item)
+//                .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getUserId()))
+//                .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e))
+//                .addOnCanceledListener(() -> Log.w(TAG, "Error adding document"))
+//                .addOnCompleteListener(task -> Log.w(TAG, "Error adding document")).getResult();
+
+        Task<DocumentReference> users = db.collection(getString(R.string.fb_users))
                 .add(item)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
-//                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                    public void onSuccess(final DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
-//                        Log.w(TAG, "Error adding document", e);
+                    public void onFailure(@NonNull final Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                })
+                .addOnCanceledListener(new OnCanceledListener() {
+                    @Override
+                    public void onCanceled() {
+                        Log.w(TAG, "Error adding document");
+                    }
+                })
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull final Task<DocumentReference> task) {
+                        Log.w(TAG, "Error adding document");
                     }
                 });
+
+        //todo:  research how firebase handles airplane mode or when you have no internet
+//        try {
+//            DocumentReference result = users.getResult();
+//        } catch (IllegalStateException e) {
+//            //hack for airplane mode
+//            saveItemLocal();
+//        }
+    }
+
+    private void saveItemLocal() {
+        if (startDateEditText.getText().length() > 0) {
+            hydrateTimerItem();
+
+            //existing item
+            if (id != null) {
+
+                Iterator<TimerItem> iter = timerItemList.iterator();
+
+                while (iter.hasNext()) {
+                    TimerItem item = iter.next();
+
+                    if (item.getUserId().equals(id)) {
+                        iter.remove();
+                        timerItem.setUserId(id);
+                    }
+                }
+            } else {
+                timerItemList.add(timerItem);
+            }
+            PrefManager.setListOfItems(this, new Gson().toJson(timerItemList));
+        }
+    }
+
+    private void hydrateTimerItem() {
+        timerItem.setUserId(FirebaseAuth.getInstance().getCurrentUser() != null ? FirebaseAuth.getInstance().getCurrentUser().getUid() :
+                String.valueOf(timerItemList.size() == 0 ? 1 : timerItemList.get(timerItemList.size() - 1).getUserId() + 1));
+        timerItem.setName(titleEditText.getText().toString());
+        timerItem.setCategory(((TimerItem) categorySpinner.getSelectedItem()).getCategory());
+        timerItem.setDateString(startDateEditText.getText().toString());
+        timerItem.setNote(notesEditText.getText().toString());
+        timerItem.setDate(new Date(startDateEditText.getText().toString()));
+        timerItem.setEnabled(isEnabled());
     }
 
     private void handleSaveItem() {
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
         if (currentUser != null) {
             setup();
-            if (id > 0) {
+            if (id != null) {
                 updateDocument(timerItem);
             } else {
                 addItem(timerItem);
             }
             //depending on what the user did edit/add/delete item
+            timerItemList.add(timerItem);
         } else {
-
-            if (startDateEditText.getText().length() > 0) {
-                timerItem.setName(titleEditText.getText().toString());
-                timerItem.setCategory(categorySpinner.getSelectedItem().toString());
-                timerItem.setDateString(startDateEditText.getText().toString());
-                timerItem.setNote(notesEditText.getText().toString());
-                timerItem.setDate(new Date(startDateEditText.getText().toString()));
-                timerItem.setEnabled(isEnabled());
-
-                //existing item
-                if (id > 0) {
-
-                    Iterator<TimerItem> iter = timerItemList.iterator();
-
-                    while (iter.hasNext()) {
-                        TimerItem item = iter.next();
-
-                        if (item.getId() == id) {
-                            iter.remove();
-                            timerItem.setId(id);
-                        }
-                    }
-                } else {
-                    timerItem.setId(timerItemList.size() == 0 ? 1 : timerItemList.get(timerItemList.size() - 1).getId() + 1);
-                }
-                PrefManager.setListOfItems(this, new Gson().toJson(timerItemList));
-            }
+            saveItemLocal();
         }
-
-        timerItemList.add(timerItem);
         finish();
     }
 

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,11 +15,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import kalei.com.timerapp.MainActivity;
 import kalei.com.timerapp.PrefManager;
 import kalei.com.timerapp.R;
 import kalei.com.timerapp.TimeDifference;
@@ -75,7 +72,7 @@ public class TimerItemAdapter extends RecyclerView.Adapter<TimerViewHolder> {
             public void onClick(final View view) {
                 Intent i = new Intent(mContext, TimerActivityDetail.class);
 
-                i.putExtra(TimerActivityDetail.ID_BUNDLE_NAME, item.getId());
+                i.putExtra(TimerActivityDetail.ID_BUNDLE_NAME, item.getUserId());
                 mContext.startActivity(i);
             }
         });

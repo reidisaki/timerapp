@@ -1,5 +1,6 @@
 package kalei.com.timerapp;
 
+import com.google.firebase.FirebaseApiNotAvailableException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -39,8 +40,14 @@ import kalei.com.timerapp.views.TimerItemAdapter;
  * Created by risaki on 9/24/17.
  */
 
-public class MainActivity extends TimerBaseActivity {
+public class MainActivity extends TimerBaseActivity implements ITimerFirebaseCallback {
 
+    /*
+    if a user is not authenticated you store it locally, and when they authenticate you update all ids
+    to be the google userId and then sync with firebase
+    if a user logs out then they use the unauthenticated userId which will be empty string
+
+     */
     @BindView (R.id.fab)
     FloatingActionButton fab;
 
@@ -51,8 +58,8 @@ public class MainActivity extends TimerBaseActivity {
     //todo: research how the hell to use drawerlayout
     @BindView (R.id.drawer_layout) DrawerLayout mDrawerLayout;
     TimerItemAdapter adapter;
-    ArrayList<TimerItem> timerItemList;
-    int id = -1; // this needs to be the id you are passing from the item you select
+    ArrayList<TimerItem> timerItemList = new ArrayList<>();
+    int id = -1; // this needs to be the userId you are passing from the item you select
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -68,9 +75,18 @@ public class MainActivity extends TimerBaseActivity {
             }
         });
 
-        String jsonListString = PrefManager.getListOfItems(this);
-        timerItemList = new Gson().fromJson(jsonListString, new TypeToken<List<TimerItem>>() {
-        }.getType());
+
+        /*
+            this is from the local cache
+            we need to query the firebase for the data and then store it locally unless firebase
+            already stores it locally when ti requests data
+         */
+
+        try {
+            populateTimerItemList();
+        } catch (FirebaseApiNotAvailableException e) {
+            e.printStackTrace();
+        }
         adapter = new TimerItemAdapter(this);
         adapter.setItems(timerItemList);
         LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -173,6 +189,16 @@ public class MainActivity extends TimerBaseActivity {
         });
     }
 
+    private void populateTimerItemList() throws FirebaseApiNotAvailableException {
+        if (FireBaseHelper.getInstance().isAuthenticated()) {
+            FireBaseHelper.getInstance().getAllItems(timerItemList, this);
+        } else {
+            String jsonListString = PrefManager.getListOfItems(this);
+            timerItemList = new Gson().fromJson(jsonListString, new TypeToken<List<TimerItem>>() {
+            }.getType());
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -201,6 +227,12 @@ public class MainActivity extends TimerBaseActivity {
         ArrayList<TimerItem> timerItemList = new Gson().fromJson(jsonListString, new TypeToken<List<TimerItem>>() {
         }.getType());
         adapter.setItems(timerItemList);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onGetAllItems(List<TimerItem> items) {
+        timerItemList = new ArrayList(items);
         adapter.notifyDataSetChanged();
     }
 }

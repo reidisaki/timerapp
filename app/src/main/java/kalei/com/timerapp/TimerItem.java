@@ -11,6 +11,12 @@ public class TimerItem implements Serializable {
 
     String name;
     String category;
+    boolean isEnabled;
+    String type;
+    String note;
+    Date date;
+    String dateString;
+    String userId;
 
     public TimerItem() {
 
@@ -28,8 +34,6 @@ public class TimerItem implements Serializable {
         isEnabled = enabled;
     }
 
-    boolean isEnabled;
-
     public String getType() {
         return type;
     }
@@ -37,8 +41,6 @@ public class TimerItem implements Serializable {
     public void setType(final String type) {
         this.type = type;
     }
-
-    String type;
 
     public String getCategory() {
         return category;
@@ -55,8 +57,6 @@ public class TimerItem implements Serializable {
     public void setNote(final String note) {
         this.note = note;
     }
-
-    String note;
 
     public String getName() {
         return name;
@@ -82,15 +82,11 @@ public class TimerItem implements Serializable {
         this.dateString = dateString;
     }
 
-    public int getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(final int id) {
-        this.id = id;
+    public void setUserId(final String userId) {
+        this.userId = userId;
     }
-
-    Date date;
-    String dateString;
-    int id;
 }

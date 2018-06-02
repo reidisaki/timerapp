@@ -17,6 +17,8 @@
     <string name="title_activity_timer_base">TimerBaseActivity</string>
     <string name="title_activity_scrolling">activity scrolling</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="fb_users">users</string>
+    <string name="fb_items">items</string>
     <string name="set_date">Set date</string>
-    <string name="client_api_key">AIzaSyBpqdKE3YsUSnw3slH6NPW_nDlsSwx6QDk</string>
+    <string name="client_api_key">450542561364-18ka74qlm1k4br6sfaih0idiptjbh05d.apps.googleusercontent.com</string>
 </resources>
