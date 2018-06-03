@@ -19,6 +19,6 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="fb_users">users</string>
     <string name="fb_items">items</string>
-    <string name="set_date">Set date</string>
+    <string name="set_date">Set dateCreated</string>
     <string name="client_api_key">450542561364-18ka74qlm1k4br6sfaih0idiptjbh05d.apps.googleusercontent.com</string>
 </resources>

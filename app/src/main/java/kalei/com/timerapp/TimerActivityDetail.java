@@ -15,13 +15,13 @@ import com.google.gson.reflect.TypeToken;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -68,7 +68,7 @@ import static kalei.com.timerapp.TimeDifference.getFormattedStringDate;
  * ButterKnife.bind(this); // TODO Use fields... }
  */
 
-public class TimerActivityDetail extends TimerBaseActivity implements DatePickerDialog.OnDateSetListener {
+public class TimerActivityDetail extends TimerBaseActivity {
 
     public static final String ID_BUNDLE_NAME = "bundle_name";
     public static final String EXISTING_ID_BUNDLE_NAME = "exiting_bundle_id";
@@ -132,12 +132,17 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
                 onBackPressed();
             }
         });
-
+        final DialogFragment newFragment = new DatePickerFragment();
         startDateEditText.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View view) {
 
-                final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, android.R.style.Theme_Holo_Light_Dialog);
+                newFragment.show(getFragmentManager(), "datePicker");
+                newFragment.getFragmentManager().executePendingTransactions();
+
+                final DatePickerDialog datePickerDialog = (DatePickerDialog) newFragment.getDialog();
+
+//                final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, 0);
                 datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 datePickerDialog.setTitle(getString(R.string.set_date));
                 if (startDateEditText.getText().length() > 0) {
@@ -237,12 +242,12 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
     public void refreshClicked() {
 
         if (currentItem == null) {
-            timerItem.setDate(new Date());
+            timerItem.setDateCreated(new Date());
             currentItem = timerItem;
         } else {
-            currentItem.setDate(new Date());
+            currentItem.setDateCreated(new Date());
         }
-        startDateEditText.setText(new SimpleDateFormat("MM/dd/yyyy").format(currentItem.getDate()));
+        startDateEditText.setText(new SimpleDateFormat("MM/dd/yyyy").format(currentItem.getDateCreated()));
         dateStringTextView.setText(calculateDateDifferenceStringFormat());
     }
 
@@ -269,7 +274,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
     private void setExistingValues() {
         notesEditText.setText(currentItem.getNote());
         titleEditText.setText(currentItem.getName());
-        startDateEditText.setText(new SimpleDateFormat("MM/dd/yyyy").format(currentItem.getDate()));
+        startDateEditText.setText(new SimpleDateFormat("MM/dd/yyyy").format(currentItem.getDateCreated()));
         categorySpinner.setSelection(getSelectedPositionCategory());
         iconImageView.setImageDrawable(ContextCompat.getDrawable(this, TimerItemAdapter.setIconImage(currentItem)));
 
@@ -303,7 +308,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
     }
 
     private String calculateDateDifferenceStringFormat() {
-        return getFormattedStringDate(currentItem.getDate(), new Date());
+        return getFormattedStringDate(currentItem.getDateCreated(), new Date());
     }
 
     @Override
@@ -417,8 +422,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
         String timerItemString = new Gson().toJson(timerItem);
         item.put("userId", String.valueOf(timerItem.getUserId()));
         item.put("category", timerItem.getCategory());
-        item.put("dateCreated", timerItem.getDateString());
-        item.put("date", timerItem.getDate());
+        item.put("dateCreated", timerItem.getDateCreated().toString());
         item.put("type", timerItem.getType());
         item.put("dateString", timerItem.getDateString());
         item.put("name", timerItem.getName());
@@ -500,7 +504,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
         timerItem.setCategory(((TimerItem) categorySpinner.getSelectedItem()).getCategory());
         timerItem.setDateString(startDateEditText.getText().toString());
         timerItem.setNote(notesEditText.getText().toString());
-        timerItem.setDate(new Date(startDateEditText.getText().toString()));
+        timerItem.setDateCreated(new Date());
         timerItem.setEnabled(isEnabled());
     }
 
@@ -523,10 +527,10 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
         finish();
     }
 
-    @Override
-    public void onDateSet(final DatePicker datePicker, final int year, final int month, final int day) {
-        startDateEditText.setText(String.format("%s/%s/%s", month + 1, day, year));
-    }
+//    @Override
+//    public void onDateSet(final DatePicker datePicker, final int year, final int month, final int day) {
+//        startDateEditText.setText(String.format("%s/%s/%s", month + 1, day, year));
+//    }
 
     public boolean isEnabled() {
         return lockIcon.getDrawable().getConstantState() != getDrawable(R.drawable.ic_lock).getConstantState();
@@ -536,7 +540,7 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
      * Create a DatePickerFragment class that extends DialogFragment.
      * Define the onCreateDialog() method to return an instance of DatePickerDialog
      */
-    public static class DatePickerFragment extends DialogFragment {
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -544,11 +548,16 @@ public class TimerActivityDetail extends TimerBaseActivity implements DatePicker
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
-            DatePickerDialog picker = new DatePickerDialog(getActivity(),
-                    (DatePickerDialog.OnDateSetListener)
-                            getActivity(), year, month, day);
-            picker.getDatePicker().setCalendarViewShown(false);
-            return picker;
+            DatePickerDialog datePickerDialog
+                    = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Dialog, this, year, month, day);
+
+            datePickerDialog.getDatePicker().setCalendarViewShown(false);
+            return datePickerDialog;
+        }
+
+        @Override
+        public void onDateSet(final DatePicker datePicker, final int i, final int i1, final int i2) {
+
         }
     }
 }

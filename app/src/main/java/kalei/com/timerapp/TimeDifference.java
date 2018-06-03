@@ -32,13 +32,13 @@ public class TimeDifference {
     );
 
     /**
-     * Get relative time ago for date
+     * Get relative time ago for dateCreated
      * <p>
      * NOTE:
-     * if (duration > WEEK_IN_MILLIS) getRelativeTimeSpanString prints the date.
+     * if (duration > WEEK_IN_MILLIS) getRelativeTimeSpanString prints the dateCreated.
      * <p>
      * ALT:
-     * return getRelativeTimeSpanString(date, now, SECOND_IN_MILLIS, FORMAT_ABBREV_RELATIVE);
+     * return getRelativeTimeSpanString(dateCreated, now, SECOND_IN_MILLIS, FORMAT_ABBREV_RELATIVE);
      *
      * @param date String.valueOf(TimeUtils.getRelativeTime(1000L * Date/Time in Millis)
      *

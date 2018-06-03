@@ -14,7 +14,7 @@ public class TimerItem implements Serializable {
     boolean isEnabled;
     String type;
     String note;
-    Date date;
+    Date dateCreated;
     String dateString;
     String userId;
 
@@ -66,12 +66,12 @@ public class TimerItem implements Serializable {
         this.name = name;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getDateCreated() {
+        return dateCreated;
     }
 
-    public void setDate(final Date date) {
-        this.date = date;
+    public void setDateCreated(final Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     public String getDateString() {

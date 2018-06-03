@@ -1,6 +1,7 @@
 package kalei.com.timerapp;
 
 import com.google.firebase.FirebaseApiNotAvailableException;
+import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -59,13 +60,14 @@ public class MainActivity extends TimerBaseActivity implements ITimerFirebaseCal
     @BindView (R.id.drawer_layout) DrawerLayout mDrawerLayout;
     TimerItemAdapter adapter;
     ArrayList<TimerItem> timerItemList = new ArrayList<>();
-    int id = -1; // this needs to be the userId you are passing from the item you select
+    String id = null; // this needs to be the userId you are passing from the item you select
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+//        FireBaseHelper.getInstance().syncWithCloud();
         fab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -156,6 +158,7 @@ public class MainActivity extends TimerBaseActivity implements ITimerFirebaseCal
 
             }
         });
+
         getSupportActionBar().setCustomView(actionBarDropDownView);
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayShowCustomEnabled(true);
